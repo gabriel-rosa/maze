@@ -48,6 +48,10 @@ function generate() {
 function solve() {	
 	window.clearInterval(maze.intervalID);
 
+	maze.clear();
+	maze.paintTile(maze.start[0], maze.start[1],'orange');
+	maze.paintTile(maze.end[0], maze.end[1],'red');
+
 	maze.pathBuffer = new Array;
 	maze.solverPath = new Array;
 
@@ -64,6 +68,7 @@ function init() {
 	maze = new Maze(100, 100);
 	maze.drawDelay = delay;
 	maze.wallBuffer = maze_wallBuffer;
+	
 	maze.clear();
 	maze.paintTile(maze.start[0], maze.start[1],'orange');
 	maze.paintTile(maze.end[0], maze.end[1],'red');
