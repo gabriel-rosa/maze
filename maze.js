@@ -32,14 +32,19 @@ function debug(message, level) {
 }
 
 function generate() {
-	var columns = document.getElementById("columns").value;
-	var rows = document.getElementById("rows").value;
+	var columns = Number(document.getElementById("columns").value);
+	var rows = Number(document.getElementById("rows").value);
+
+	window.clearInterval(maze.intervalID);
 
 	maze = new Maze(columns, rows);
+	//maze.drawTileBuffer();
 	maze.generateDepthFirst();
 }
 
 function solve() {	
+	window.clearInterval(maze.intervalID);
+
 	maze.pathBuffer = new Array;
 	maze.solverPath = new Array;
 
@@ -50,7 +55,7 @@ function init() {
 	canvas = document.getElementById("canvas");
 	ctx = canvas.getContext("2d");
 
-	maze = new Maze(50, 50);
+	maze = new Maze(100, 100);
 	//maze.drawGrid();
 	//maze.paintTile(0, 0, 'green');
 	maze.drawTileBuffer();
