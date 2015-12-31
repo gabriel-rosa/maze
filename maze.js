@@ -34,10 +34,13 @@ function debug(message, level) {
 function generate() {
 	var columns = Number(document.getElementById("columns").value);
 	var rows = Number(document.getElementById("rows").value);
+	var delay = Number(document.getElementById("delay").value);
 
-	window.clearInterval(maze.intervalID);
+	if (maze !== undefined)
+		window.clearInterval(maze.intervalID);
 
 	maze = new Maze(columns, rows);
+	maze.drawDelay = delay;
 	//maze.drawTileBuffer();
 	maze.generateDepthFirst();
 }
@@ -55,10 +58,13 @@ function init() {
 	canvas = document.getElementById("canvas");
 	ctx = canvas.getContext("2d");
 
-	maze = new Maze(100, 100);
+	ctx.fillStyle = 'black';
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+	//maze = new Maze(30, 30);
 	//maze.drawGrid();
 	//maze.paintTile(0, 0, 'green');
-	maze.drawTileBuffer();
+	//maze.drawTileBuffer();
 
 	//init_grid(10, 10, 2);
 	//paint_tile(10, 10, 2, 0, 0, 'green');
@@ -73,7 +79,7 @@ function Maze(M, N) {
 	this.tileBuffer = new Uint8Array(this.M*this.N);
 	this.pathBuffer = new Array;
 	this.solverPath = new Array;
-	this.drawDelay = 5;
+	this.drawDelay = 50;
 
 	this.last_current = new Array;
 	this.current = new Array;
@@ -184,11 +190,13 @@ function depthFirstTick(maze) {
 
 	var current = maze.current;
 
+	maze.paintTile(current[0], current[1], 'blue');
+
 	// stuck
 	if (maze.last_current[0] == maze.current[0] && maze.last_current[1] == maze.current[1]) {
 		var i, j;
 
-		debug("STUCK", 3);	
+		debug("STUCK", 3);		
 
 		for (i=0; i<maze.M; i++) {
 			for (j=0; j<maze.N; j++) {	
@@ -242,6 +250,8 @@ function depthFirstTick(maze) {
 		maze.last_current[0] = current[0];
 		maze.last_current[1] = current[1];
 
+		maze.paintTile(current[0], current[1], 'white');
+
 		if (current[0] != 0 && (maze.tileBuffer[current[0]-1 + current[1]*maze.M] == 1 || maze.tileBuffer[current[0]-1 + current[1]*maze.M] == 3) && maze.getWall(current, [-1,0]) == 1) {
 			current[0] -= 1;
 		} else if (current[0] != maze.M && (maze.tileBuffer[current[0]+1 + current[1]*maze.M] == 1 || maze.tileBuffer[current[0]+1 + current[1]*maze.M] == 3)  && maze.getWall(current, [1,0]) == 1) {
@@ -251,10 +261,10 @@ function depthFirstTick(maze) {
 		} else if (current[1] != maze.N && (maze.tileBuffer[current[0] + (current[1]+1)*maze.M] == 1 || maze.tileBuffer[current[0] + (current[1]+1)*maze.M] == 3) && maze.getWall(current, [0,1]) == 1) {
 			current[1] += 1;
 		}
-
+		
 		maze.current = current;		
-		maze.drawTileBuffer();
-
+		//maze.drawTileBuffer();
+		
 		return;
 	}
 
@@ -268,13 +278,15 @@ function depthFirstTick(maze) {
 	current[0] += possible_directions[ind][0];
 	current[1] += possible_directions[ind][1];
 
-	if (maze.tileBuffer[current[0] + current[1]*maze.M] == 0)
+	if (maze.tileBuffer[current[0] + current[1]*maze.M] == 0) {
 		maze.tileBuffer[current[0] + current[1]*maze.M] = 1;
+		maze.paintTile(current[0], current[1], 'red');
+	}
 
 	maze.not_visited_tiles -= 1;
 
 	maze.current = current;
-	maze.drawTileBuffer();
+	//maze.drawTileBuffer();
 
 	if (maze.not_visited_tiles == 0) {
 		console.log("CLEAR");
