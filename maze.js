@@ -61,7 +61,13 @@ function init() {
 	ctx.fillStyle = 'black';
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-	//maze = new Maze(30, 30);
+	maze = new Maze(100, 100);
+	maze.drawDelay = delay;
+	maze.wallBuffer = maze_wallBuffer;
+	maze.clear();
+	maze.paintTile(maze.start[0], maze.start[1],'orange');
+	maze.paintTile(maze.end[0], maze.end[1],'red');
+
 	//maze.drawGrid();
 	//maze.paintTile(0, 0, 'green');
 	//maze.drawTileBuffer();
@@ -79,7 +85,7 @@ function Maze(M, N) {
 	this.tileBuffer = new Uint8Array(this.M*this.N);
 	this.pathBuffer = new Array;
 	this.solverPath = new Array;
-	this.drawDelay = 50;
+	this.drawDelay = 1;
 
 	this.last_current = new Array;
 	this.current = new Array;
