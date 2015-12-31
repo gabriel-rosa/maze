@@ -4,7 +4,7 @@ var canvas;
 var ctx;
 var maze;
 
-var debug_level = 3;
+var debug_level = 2;
 
 // level - type
 // 0 - error
@@ -100,22 +100,22 @@ function breadthFirstTick(maze) {
 
 	var i;
 
-	console.log(maze.pathBuffer);
+	//console.log(maze.pathBuffer);
 
 	var path = maze.pathBuffer.shift();
 
-	console.log(path);
+	//console.log(path);
 
 	var tile = path[path.length-1];
 
-	console.log(tile);
+	//console.log(tile);
 
 	var dir = [[-1,0],[1,0],[0,-1],[0,1]];
 
 	for (i=0; i<dir.length; i++) {
 		var new_tile = [tile[0]+dir[i][0], tile[1]+dir[i][1]];
 
-		console.log(new_tile);
+		//console.log(new_tile);
 
 		if (maze.getWall(tile, dir[i]) == 1 && maze.tileBuffer[new_tile[0] + new_tile[1]*maze.M] == 1) {			
 			maze.tileBuffer[new_tile[0] + new_tile[1]*maze.M] = 4;
@@ -125,11 +125,13 @@ function breadthFirstTick(maze) {
 			var new_path = path.slice(0);		
 			new_path.push(new_tile);
 
-			console.log(new_path);
-			console.log(path);
+			//console.log(new_path);
+			//console.log(path);
 
 			if (new_tile[0] == maze.end[0] && new_tile[1] == maze.end[1]) {
 				window.clearInterval(maze.intervalID);
+
+				debug(new_path, 2);
 
 				maze.solverPath = new_path;
 				maze.drawPath();
@@ -201,6 +203,7 @@ function depthFirstTick(maze) {
 		for (i=0; i<maze.M; i++) {
 			for (j=0; j<maze.N; j++) {	
 				if (maze.tileBuffer[i+j*maze.M] == 1) {
+					maze.paintTile(current[0], current[1], 'white');
 					debug([i, j], 3);
 					current = [i,j];
 					break;
